@@ -1,87 +1,129 @@
-# Titanic Survival Prediction Model - Deployment and Monitoring
+# Titanic Survival Prediction Project
 
-This project implements a machine learning model for predicting Titanic passenger survival, with deployment and monitoring capabilities using MLflow.
+This project uses machine learning to predict passenger survival on the Titanic based on various features like passenger class, age, gender, etc. The project is built using Python, scikit-learn, XGBoost, and MLflow for experiment tracking and model management.
 
-## Model Deployment
+## Project Structure
 
-The model is deployed using MLflow's model serving capabilities. To start the model server:
-
-```bash
-python serve_model.py
+```
+mlflow_project/
+├── data/
+│   ├── raw/
+│   │   └── titanic.csv
+│   └── processed/
+├── models/
+│   └── train_model.py
+├── src/
+│   ├── data/
+│   │   └── process_data.py
+│   ├── models/
+│   │   └── train_model.py
+│   ├── predict_terminal.py
+│   └── serve_best_model.sh
+└── requirements.txt
 ```
 
-This will start the model server on `http://127.0.0.1:5000`.
+## Features
 
-## Model Monitoring
+- Data preprocessing and feature engineering
+- Multiple model training (Random Forest, Logistic Regression, XGBoost)
+- Hyperparameter optimization using Hyperopt
+- Model tracking and versioning with MLflow
+- Terminal-based prediction interface
+- Model serving capability
 
-The monitoring system tracks the following metrics:
-- Total number of predictions
-- Survival rate (percentage of predicted survivors)
-- Average confidence score
-- Timestamp of predictions
+## Installation
 
-### Monitoring Files
-- `model_monitoring.log`: Contains detailed logs of all predictions and metrics
-- `prediction_logs.json`: Stores the history of predictions with input data and results
-
-### Running the Monitoring System
-
-To simulate incoming data and monitor model performance:
-
+1. Clone the repository:
 ```bash
-python deploy_model.py
+git clone [your-repository-url]
+cd mlflow_project
+```
+
+2. Create and activate a virtual environment:
+```bash
+python -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
+```
+
+3. Install dependencies:
+```bash
+pip install -r requirements.txt
+```
+
+## Usage
+
+### Training Models
+
+To train the models:
+```bash
+cd src
+python models/train_model.py
 ```
 
 This will:
-1. Load the trained model
-2. Simulate 10 random passenger predictions
-3. Log predictions and calculate performance metrics
-4. Save results to monitoring files
+- Load and preprocess the Titanic dataset
+- Train multiple models (Random Forest, Logistic Regression, XGBoost)
+- Perform hyperparameter optimization
+- Log experiments and models using MLflow
 
-## Performance Metrics
+### Making Predictions
 
-The monitoring system calculates the following metrics over a sliding window of 100 predictions:
-- `total_predictions`: Number of predictions in the window
-- `survival_rate`: Percentage of passengers predicted to survive
-- `avg_confidence`: Average confidence score of predictions
-- `timestamp`: When the metrics were calculated
-
-## Logging
-
-All activities are logged to:
-- `model_monitoring.log`: For prediction and monitoring activities
-- `model_serving.log`: For model serving activities
-
-## API Endpoints
-
-When the model is served, it exposes the following endpoints:
-- `POST /invocations`: Make predictions
-- `GET /ping`: Health check
-
-Example prediction request:
+To make predictions using the terminal interface:
 ```bash
-curl -X POST http://127.0.0.1:5000/invocations \
-  -H "Content-Type: application/json" \
-  -d '{
-    "data": {
-      "Pclass": 1,
-      "Sex": "female",
-      "Age": 30,
-      "SibSp": 0,
-      "Parch": 0,
-      "Fare": 50,
-      "Embarked": "C"
-    }
-  }'
+cd src
+python predict_terminal.py
 ```
 
-## Monitoring Dashboard
+You'll be prompted to enter passenger details:
+- Pclass (1, 2, or 3)
+- Sex (male or female)
+- Age
+- Number of siblings/spouses aboard (SibSp)
+- Number of parents/children aboard (Parch)
+- Fare (typical range: 0-512)
+- Port of Embarkation (C = Cherbourg, Q = Queenstown, S = Southampton)
 
-To view the monitoring dashboard:
-1. Start the MLflow UI:
+### Serving the Model
+
+To serve the best model:
 ```bash
-mlflow ui
+cd src
+bash serve_best_model.sh
 ```
-2. Open `http://localhost:5000` in your browser
-3. Navigate to the "titanic_survival" experiment
-4. View the metrics and model performance over time 
+
+The model will be served at `http://127.0.0.1:5001`
+
+## Model Details
+
+The project uses three different models:
+1. Random Forest Classifier
+2. Logistic Regression
+3. XGBoost Classifier
+
+Each model is trained with optimized hyperparameters using Hyperopt. The best performing model is automatically selected and can be used for predictions.
+
+## Data Preprocessing
+
+The preprocessing pipeline includes:
+- Handling missing values
+- Encoding categorical variables
+- Feature scaling
+- Feature engineering
+
+## Dependencies
+
+- Python 3.8+
+- scikit-learn
+- XGBoost
+- MLflow
+- pandas
+- numpy
+- hyperopt
+
+## License
+
+[Your chosen license]
+
+## Author
+
+[Your name] 
